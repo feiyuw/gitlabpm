@@ -1,5 +1,7 @@
 # gitlabpm - a scrum project management tool based on gitlab
 
+[![Build Status](https://travis-ci.org/feiyuw/gitlabpm.svg?branch=master)](https://travis-ci.org/feiyuw/gitlabpm)
+
 The development of my team has been switched to gitlab, but the management is a problem. We created a markdown document to update the issue status and assigner, but as we use SCRUM process, the document need to update every day, and this is a waste of work.
 
 Based on this issue, I decided to create this tool, it want to solve:
