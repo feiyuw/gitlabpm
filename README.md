@@ -13,6 +13,10 @@ Based on this issue, I decided to create this tool, it want to solve:
 1. As a developer, I want to create a merge request based on issues
 1. As a developer, I want to the issues created automatically when I close their merge request
 1. As a developer, I want to move one issue from A project to B project
+1. As a developer, I want gitlab will send the review request email to the key reviewers when the merge request has been created and PASS CCI
+1. As a developer, I want merge request closed automatically when over 2 key reviewers marked +1 and CCI passed
+1. As a developer, I want to define key reviewers of my merge request, project owners should be key reviewers
+1. As a developer, I want to know the CCI result of my merge request
 
 ## Overview
 
