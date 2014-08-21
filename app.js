@@ -1,12 +1,19 @@
 var express = require('express');
 var path = require('path');
+var connect = require('connect'); // new added for session
+var MongoStore = require('connect-mongo')(connect); // new added for session
+var settings = require('./settings'); // new added for session
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session'); // new added for session
+var flash = require('connect-flash'); // new added for flash
 var bodyParser = require('body-parser');
+var multer = require('multer'); // new added for file uploading
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var articles = require('./routes/articles');
 var api = require('./routes/api');
 
 var app = express();
@@ -15,17 +22,31 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(flash()); // new added for flash
+app.use(multer({
+    dest: "./public/images"
+})); // new added for file uploading
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+// new added for session
+app.use(session({
+    secret: settings.cookieSecret,
+    name: settings.db,
+    cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},
+    store: new MongoStore({
+        db: settings.db
+    })
+}));
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
 app.use('/api', api);
+app.use('/articles', articles);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Project Management System for Gitlab</title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+    </head>
+    <body>
+        <header>
+            <h1><%= title %></h1>
+        </header>
+        <nav>
+            <span><a title="home" href="/">home</a></span>
+            <% if (user) { %>
+                <span><a title="upload" href="/articles/upload">upload</a></span>
+                <span><a title="post" href="/articles/post">post</a></span>
+                <span><a title="logout" href="/users/logout">logout</a></span>
+            <% } else { %>
+                <span><a title="login" href="/users/login">login</a></span>
+                <span><a title="register" href="/users/reg">register</a></span>
+            <% } %>
+        </nav>
+
+        <article>
+            <% if (success) { %>
+                <div><%= success %></div>
+            <% } %>
+            <% if (error) { %>
+                <div><%= error %></div>
+            <% } %>
