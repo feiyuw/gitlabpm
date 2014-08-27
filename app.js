@@ -1,7 +1,5 @@
 var express = require('express');
 var path = require('path');
-var connect = require('connect'); // new added for session
-var MongoStore = require('connect-mongo')(connect); // new added for session
 var settings = require('./settings'); // new added for session
 var favicon = require('static-favicon');
 var logger = require('morgan');
@@ -13,8 +11,7 @@ var multer = require('multer'); // new added for file uploading
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var articles = require('./routes/articles');
-var api = require('./routes/api');
+var issues = require('./routes/issues');
 
 var app = express();
 
@@ -34,19 +31,14 @@ app.use(cookieParser());
 // new added for session
 app.use(session({
     secret: settings.cookieSecret,
-    name: settings.db,
     cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},
-    store: new MongoStore({
-        db: settings.db
-    })
 }));
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/api', api);
-app.use('/articles', articles);
+app.use('/issues', issues);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

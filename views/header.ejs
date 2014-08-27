@@ -10,14 +10,14 @@
             <h1><%= title %></h1>
         </header>
         <nav>
-            <span><a title="home" href="/">home</a></span>
+            <span><a title="Home" href="/">Home</a></span>
+            <span><a title="Sprint" href="/sprint">Sprint</a></span>
+            <span><a title="Review" href="/review">Review</a></span>
+            <span><a title="Issues" href="/issues">Issues</a></span>
             <% if (user) { %>
-                <span><a title="upload" href="/articles/upload">upload</a></span>
-                <span><a title="post" href="/articles/post">post</a></span>
-                <span><a title="logout" href="/users/logout">logout</a></span>
+                <span><a title="Logout" href="/users/logout">Logout</a></span>
             <% } else { %>
-                <span><a title="login" href="/users/login">login</a></span>
-                <span><a title="register" href="/users/reg">register</a></span>
+                <span><a title="Login" href="/users/login">Login</a></span>
             <% } %>
         </nav>
 

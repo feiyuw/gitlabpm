@@ -1,6 +1,6 @@
 module.exports = {
-    cookieSecret: 'gitlabpm',
-    db: 'gitlabpm', // mongodb db name
-    host: 'localhost', // mongodb host
-    apiToken: 'GYxF7Hzzp8jqjeRjovpr' // gitlab API token
+  cookieSecret: 'gitlabpm',
+  apiHost: 'becrtt01.china.nsn-net.net', // gitlab API host
+  apiPrefix: '/api/v3', // gitlab API prefix
+  apiToken: 'GYxF7Hzzp8jqjeRjovpr' // gitlab API token
 };

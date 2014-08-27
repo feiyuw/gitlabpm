@@ -1,5 +1,5 @@
 var crypto = require('crypto');
-var User = require('../models/user.js');
+//var User = require('../models/user.js');
 var checkLogin = require('./auth.js').checkLogin;
 var checkNotLogin = require('./auth.js').checkNotLogin;
 var express = require('express');
