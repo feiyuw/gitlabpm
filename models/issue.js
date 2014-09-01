@@ -1,7 +1,9 @@
-var markdown = require('markdown').markdown;
-var cache = require('./cache.js');
-var rpc = require('./rpc.js');
-var Project = require('./project.js');
+var Cache = require('./cache');
+var rpc = require('./rpc');
+var Project = require('./project');
+var openStates = require('../settings').openStates;
+var issueCategories = require('../settings').issueCategories;
+var issuePriorities = require('../settings').issuePriorities;
 
 
 function Issue() {
@@ -10,8 +12,8 @@ function Issue() {
 
 
 Issue.all = function (callback) {
-  if (cache.get('issues')) {
-    return callback(cache.get('issues'));
+  if (Cache.getIssues()) {
+    return callback(Cache.getIssues());
   }
   Project.allOwned(function (projects) {
     var issues = [];
@@ -19,14 +21,20 @@ Issue.all = function (callback) {
     projects.forEach(function (project) {
       rpc('/projects/' + project.id + '/issues', function (projectIssues) {
         projectIssues.forEach(function (issue) {
-          issue.description = markdown.toHTML(issue.description);
           issue.project = project.name;
           issue.projectUrl = project.web_url;
+          issue.labels.forEach(function(label) {
+            if (issueCategories.indexOf(label) >= 0) {
+              issue.category = label;
+            } else if (issuePriorities.indexOf(label) >= 0) {
+              issue.priority = label;
+            }
+          });
         });
         issues = issues.concat(projectIssues);
         projectCount += 1;
         if (projectCount === projects.length) {
-          cache.set('issues', issues);
+          Cache.setIssues(issues);
           callback(issues);
         }
       });
@@ -38,7 +46,7 @@ Issue.all = function (callback) {
 Issue.openAll = function (callback) {
   Issue.all(function(issues) {
     callback(issues.filter(function(issue) {
-      return ['opened', 'reopened'].indexOf(issue.state) >= 0;
+      return openStates.indexOf(issue.state) >= 0;
     }));
   });
 }

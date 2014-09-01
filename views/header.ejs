@@ -1,30 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Project Management System for Gitlab</title>
-        <link rel='stylesheet' href='/stylesheets/style.css' />
-    </head>
-    <body>
-        <header>
-            <h1><%= title %></h1>
-        </header>
-        <nav>
-            <span><a title="Home" href="/">Home</a></span>
-            <span><a title="Sprint" href="/sprint">Sprint</a></span>
-            <span><a title="Review" href="/review">Review</a></span>
-            <span><a title="Issues" href="/issues">Issues</a></span>
-            <% if (user) { %>
-                <span><a title="Logout" href="/users/logout">Logout</a></span>
-            <% } else { %>
-                <span><a title="Login" href="/users/login">Login</a></span>
-            <% } %>
-        </nav>
-
-        <article>
-            <% if (success) { %>
-                <div><%= success %></div>
-            <% } %>
-            <% if (error) { %>
-                <div><%= error %></div>
-            <% } %>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Project Management System for Gitlab</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/nv.d3.css" />
+    <script src="/javascripts/d3.v3.min.js"></script>
+    <script src="/javascripts/nv.d3.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1><%= title %></h1>
+    </header>
+    <nav>
+      <li>
+        <a title="My Tasks" href="/">My Tasks</a>
+      </li>
+      <li>
+        <a title="Sprints" href="#">Sprints</a>
+        <ul>
+          <li><a title="Overview" href="/sprints">Overview</a></li>
+          <li><a title="Add new Sprint" href="/sprints/new">Add new Sprint</a></li>
+          <li><a title="Retrospective" href="/sprints/retro">Retrospective</a></li>
+        </ul>
+      </li>
+      <li>
+        <a title="Reviews" href="/reviews">Reviews</a>
+      </li>
+      <li>
+        <a title="Issues" href="#">Issues</a>
+        <ul>
+          <li><a title="Overview" href="/issues">Overview</a></li>
+          <li><a title="All Issues" href="/issues/openall">All Issues</a></li>
+          <li><a title="My Issues" href="/issues/my">My Issues</a></li>
+          <li><a title="Assigneed Issues" href="/issues/assigneed">Assigneed To Me</a></li>
+        </ul>
+      </li>
+      <% if (user) { %>
+      <li><a title="Logout" href="/users/logout">Logout</a></li>
+      <% } else { %>
+      <li><a title="Login" href="/users/login">Login</a></li>
+      <% } %>
+    </nav>
+    <content>
+      <% if (success) { %>
+        <div><%= success %></div>
+      <% } %>
+      <% if (error) { %>
+        <div><%= error %></div>
+      <% } %>

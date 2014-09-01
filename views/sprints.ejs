@@ -1,0 +1,70 @@
+<%- include header %>
+<section>
+  <chart id="barSprint">
+    <h2>Issues by Sprints</h2>
+    <svg class="barChart"></svg>
+  </chart>
+  <script>
+  var sprints = <%- JSON.stringify(sprints) %>.filter(function(sprint) {
+    return sprint.name != 'unplanned';
+  });
+  var data = [];
+
+  sprints.forEach(function(sprint) {
+    data.push({'key': sprint.name, 'values': [{'x': sprint.name.replace('sprint', ''), 'y': sprint.issues.length}]});
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart()
+      .transitionDuration(350)
+      .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+      .rotateLabels(0)      //Angle to rotate x-axis labels.
+      .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+      .groupSpacing(0.1)    //Distance between each group of bars.
+    ;
+
+    d3.select('#barSprint svg')
+        .datum(data)
+        .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+  </script>
+</section>
+<section>
+  <h2>Recent Sprints</h2>
+<% sprints.forEach(function(sprint) { %>
+  <h2><a href="/sprints/s/<%= sprint.name %>"><%= sprint.name %></a></h2>
+  <table>
+    <tr>
+      <th>Project</th>
+      <th>Issue</th>
+      <th>Assignee</th>
+      <th>Reporter</th>
+      <th>Priority</th>
+      <th>State</th>
+      <th>Action</th>
+    </tr>
+    <% sprint.issues.forEach(function(issue) { %>
+      <tr>
+        <td><%= issue.project %></td>
+        <td><a href="<%= issue.projectUrl %>/issues/<%= issue.iid %>"><%= issue.title %></a></td>
+        <td>
+          <% if (issue.assignee) { %>
+            <a href="/issues/a/<%= issue.assignee.name %>"><%= issue.assignee.name %></a>
+          <% } else { %>
+            unassigned
+          <% } %>
+        </td>
+        <td><a href="/issues/u/<%= issue.author.name %>"><%= issue.author.name %></a></td>
+        <td><%= issue.priority || '' %></td>
+        <td><%= issue.state %></td>
+        <td></td>
+      </tr>
+    <% }) %>
+  </table>
+<% }) %>
+</section>
+<%- include footer %>

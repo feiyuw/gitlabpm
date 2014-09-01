@@ -4,8 +4,24 @@ var Issue = require('../models/issue.js')
 
 /* GET API listing. */
 router.get('/', function(req, res) {
+  res.redirect('/issues/overview');
+});
+
+// TODO
+router.get('/overview', function(req, res) {
   Issue.openAll(function(issues) {
-    res.render('issues', { title: 'Issues',
+    res.render('issuesOverview', { title: 'Issues Overview',
+      user: req.session.user,
+      issues: issues,
+      success: req.flash('success').toString(),
+      error: req.flash('error').toString()
+    });
+  });
+});
+
+router.get('/openall', function(req, res) {
+  Issue.openAll(function(issues) {
+    res.render('issues', { title: 'Open Issues',
       user: req.session.user,
       issues: issues,
       success: req.flash('success').toString(),

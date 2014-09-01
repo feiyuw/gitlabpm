@@ -1,4 +1,4 @@
-var rpc = require('./rpc.js');
+var rpc = require('./rpc');
 
 function Project() {
   // model for gitlab Projects

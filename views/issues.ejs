@@ -1,17 +1,43 @@
 <%- include header %>
-<% issues.forEach(function(issue, index) { %>
-    <p><h2><a href="<%= issue.projectUrl %>/issues/<%= issue.iid %>"><%= issue.title %></a></h2></p>
-    <p class="info">
-        Assignee: <% if (issue.assignee) { %>
-          <a href="/issues/a/<%= issue.assignee.name %>"><%= issue.assignee.name %></a>
-        <% } else { %>
-          unassigned
-        <% } %> |
-        Author: <a href="/issues/u/<%= issue.author.name %>"><%= issue.author.name %></a> | 
-        Created: <%= issue.created_at %> |
-        State: <%= issue.state %> |
-        Project: <%= issue.project %>
-    </p>
-    <p><%- issue.description %></p>
-<% }) %>
+<section>
+  <p>Open Issues: <%= issues.length %></p>
+</section>
+<section>
+  <table>
+    <tr>
+      <th>Project</th>
+      <th>Summary</th>
+      <th>Assignee</th>
+      <th>Author</th>
+      <th>Category</th>
+      <th>Priority</th>
+      <th>Action</th>
+    </tr>
+    <% issues.forEach(function(issue) { %>
+      <tr>
+        <td><%= issue.project %></td>
+        <td><a href="<%= issue.projectUrl %>/issues/<%= issue.iid %>"><%= issue.title %></a></td>
+        <td>
+          <% if (issue.assignee) { %>
+            <a href="/issues/a/<%= issue.assignee.name %>"><%= issue.assignee.name %></a>
+          <% } else { %>
+            unassigned
+          <% } %>
+        </td>
+        <td><a href="/issues/u/<%= issue.author.name %>"><%= issue.author.name %></a></td>
+        <td>
+          <% if (issue.category) { %>
+            <%= issue.category %>
+          <% } %>
+        </td>
+        <td>
+          <% if (issue.priority) { %>
+            <%= issue.priority %>
+          <% } %>
+        </td>
+        <td></td>
+      </tr>
+    <% }) %>
+  </table>
+</section>
 <%- include footer %>
