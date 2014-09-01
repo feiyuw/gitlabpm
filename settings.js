@@ -1,6 +1,11 @@
 module.exports = {
-  cookieSecret: 'gitlabpm',
   apiHost: 'becrtt01.china.nsn-net.net', // gitlab API host
   apiPrefix: '/api/v3', // gitlab API prefix
-  apiToken: 'GYxF7Hzzp8jqjeRjovpr' // gitlab API token
+  apiToken: 'GYxF7Hzzp8jqjeRjovpr', // gitlab API token
+  openStates: ['opened', 'reopened'],
+  issueCategories: ['new', 'improvement', 'bug'],
+  issuePriorities: ['A', 'B', 'C', 'high', 'medium', 'low'],
+  devProjects: ['fss', 'coci', 'coci-runner', 'sad', 'sad-runner', 'TepProxy', 'hdfs-archiver', 'dlock'],
+  maintainProjects: ['maintenence'],
+  docProjects: ['document'],
 };

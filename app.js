@@ -7,11 +7,13 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session'); // new added for session
 var flash = require('connect-flash'); // new added for flash
 var bodyParser = require('body-parser');
-var multer = require('multer'); // new added for file uploading
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var issues = require('./routes/issues');
+var reviews = require('./routes/reviews');
+var sprints = require('./routes/sprints');
+var webhook = require('./routes/webhook');
 
 var app = express();
 
@@ -20,9 +22,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(flash()); // new added for flash
-app.use(multer({
-    dest: "./public/images"
-})); // new added for file uploading
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -30,8 +29,10 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 // new added for session
 app.use(session({
-    secret: settings.cookieSecret,
-    cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},
+  secret: 'gitlabpm',
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},
+  resave: true,
+  saveUninitialized: true,
 }));
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -39,6 +40,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/issues', issues);
+app.use('/reviews', reviews);
+app.use('/sprints', sprints);
+app.use('/webhook', webhook);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
