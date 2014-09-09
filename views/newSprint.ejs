@@ -1,0 +1,56 @@
+<%- include header %>
+<section>
+<form method="post" id="newSprint" action="/sprints/new" accept-charset="UTF-8">
+  <fieldset>
+    <legend>Sprint information:</legend>
+    <p>
+      Name: <input type="text" size="32" name="sprint" maxlength="32" id="sprint" class="form-control">
+      <label>(Enter sprint name here, the name should start with "sprint", eg: sprint14092)</label>
+    </p>
+    <p>
+      Due Date: <input type="text" size="30" name="dueDate" maxlength="30" id="dueDate" class="form-control">
+      <label>(Enter due date here, format is "YYYY-MM-DD", eg: 2014-09-12)</label>
+    </p>
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Summary</th>
+        <th>Project</th>
+        <th>Assignee</th>
+        <th>Author</th>
+        <th>Category</th>
+        <th>Priority</th>
+      </tr>
+      <% issues.forEach(function(issue) { %>
+        <tr>
+          <td><input type="checkbox" name="sprintIssues" value="<%= issue.project_id %>:<%= issue.id %>"</td>
+          <td><a href="<%= issue.projectUrl %>/issues/<%= issue.iid %>"><%= issue.title %></a></td>
+          <td><%= issue.project %></td>
+          <td>
+            <% if (issue.assignee) { %>
+              <a href="/issues/a/<%= issue.assignee.name %>"><%= issue.assignee.name %></a>
+            <% } else { %>
+              unassigned
+            <% } %>
+          </td>
+          <td><a href="/issues/u/<%= issue.author.name %>"><%= issue.author.name %></a></td>
+          <td>
+            <% if (issue.category) { %>
+              <%= issue.category %>
+            <% } %>
+          </td>
+          <td>
+            <% if (issue.priority) { %>
+              <%= issue.priority %>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+    <p>
+      <input type="submit" value="Create Sprint" name="commit">
+    </p>
+  </fieldset>
+</form>
+</section>
+<%- include footer %>
