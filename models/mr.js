@@ -17,7 +17,7 @@ MergeRequest.openAll = function (callback) {
     var mergeRequests = [];
     var projectCount = 0;
     projects.forEach(function (project) {
-      rpc('/projects/' + project.id + '/merge_requests?state=opened', function (projectMrs) {
+      rpc.get('/projects/' + project.id + '/merge_requests?state=opened', function (projectMrs) {
         projectMrs.forEach(function (mr) {
           mr.description = markdown.toHTML(mr.description);
           mr.project = project.name;

@@ -6,6 +6,9 @@ all: clean test coverage doc package
 
 test:
 	@echo building test...
+	npm install mocha
+	npm install proxyquire
+	mocha
 
 coverage:
 	@echo generating test coverage...

@@ -5,11 +5,20 @@ function Cache() {
 }
 
 Cache.get = function(key) {
-  return _cache[key];
+  var _cached = _cache[key];
+  if (_cached) {
+    console.log('hit cache "' + key + '"');
+  }
+  return _cached;
 }
 
 Cache.set = function(key, value) {
+  console.log('update cache "' + key + '"');
   _cache[key] = value;
+}
+
+Cache.reset = function() {
+  _cache = {};
 }
 
 Cache.getIssues = function() {
@@ -20,12 +29,24 @@ Cache.setIssues = function(value) {
   Cache.set('issues', value);
 }
 
+Cache.updateIssue = function(newIssue) {
+  issues = Cache.getIssues();
+  for (idx in issues) {
+    var issue = issues[idx];
+    if (issue.project_id == newIssue.project_id && issue.id == newIssue.id) {
+      issues.splice(issues.indexOf(issue), 1, newIssue);
+      Cache.setIssues(issues);
+      break
+    }
+  }
+}
+
 Cache.getMergeRequests = function() {
-  return Cache.get('mergeRequests');
+  return Cache.get('mergerequests');
 }
 
 Cache.setMergeRequests = function(value) {
-  Cache.set('mergeRequests', value);
+  Cache.set('mergerequests', value);
 }
 
 Cache.getSprints = function() {
@@ -34,6 +55,30 @@ Cache.getSprints = function() {
 
 Cache.setSprints = function(value) {
   Cache.set('sprints', value);
+}
+
+Cache.getMileStones = function() {
+  return Cache.get('milestones');
+}
+
+Cache.setMileStones = function(value) {
+  Cache.set('milestones', value);
+}
+
+Cache.getAllProjects = function() {
+  return Cache.get('allprojects');
+}
+
+Cache.setAllProjects = function(value) {
+  Cache.set('allprojects', value);
+}
+
+Cache.getOwnedProjects = function() {
+  return Cache.get('ownedprojects');
+}
+
+Cache.setOwnedProjects = function(value) {
+  Cache.set('ownedprojects', value);
 }
 
 
