@@ -8,7 +8,7 @@ test:
 	@echo building test...
 	npm install mocha
 	npm install proxyquire
-	mocha
+	node_modules/mocha/bin/mocha
 
 coverage:
 	@echo generating test coverage...

@@ -4,7 +4,7 @@ var Project = require('./project');
 var openStates = require('../settings').openStates;
 var issueCategories = require('../settings').issueCategories;
 var issuePriorities = require('../settings').issuePriorities;
-var mixin = require('utils-merge');
+var async = require('async');
 
 
 function Issue() {
@@ -72,12 +72,11 @@ Issue.filterAssignee = function (userName, callback) {
 }
 
 
-Issue.get = function (projectId, issueId, callback) {
-  var projectId = parseInt(projectId);
+Issue.get = function (issueId, callback) {
   var issueId = parseInt(issueId);
   Issue.all(function (issues) {
     var oneIssue = issues.filter(function (issue) {
-      return issue.project_id == projectId && issue.id == issueId;
+      return issue.id == issueId;
     });
     if (oneIssue) {
       callback(oneIssue[0]);
@@ -89,8 +88,8 @@ Issue.get = function (projectId, issueId, callback) {
 
 
 // TODO: now only support to update sprint of one issue
-Issue.edit = function (projectId, issueId, sprintId, callback) {
-  Issue.get(projectId, issueId, function(issue) {
+Issue.edit = function (issueId, sprintId, callback) {
+  Issue.get(issueId, function(issue) {
     if (issue) {
       var putUrl = '/projects/' + issue.project_id + '/issues/' + issue.id;
       var putData = {
@@ -111,13 +110,57 @@ Issue.edit = function (projectId, issueId, sprintId, callback) {
         putData['milestone_id'] = sprintId;
       }
       rpc.put(putUrl, putData, function(returnIssue) {
-        issue = mixin(issue, returnIssue);
-        issue.sprint = issue.milestone && issue.milestone.title || 'unplanned';
-        Cache.updateIssue(issue);
+        callback(returnIssue);
       });
-      callback(issue);
     }
   });
+}
+
+
+// used in webhook
+Issue.update = function(issue, callback) {
+  async.waterfall([
+      // get issue info, as parameter issue is the value from webhook, it's not the complete one
+      function(cb) {
+        rpc.get('/projects/' + issue.project_id + '/issues/' + issue.id, function (issue) {
+          cb(null, issue);
+        });
+      },
+      // get sprint, category and priority of issue
+      function(issue, cb) {
+        issue.sprint = issue.milestone && issue.milestone.title || 'unplanned';
+        issue.labels.forEach(function(label) {
+          if (issueCategories.indexOf(label) >= 0) {
+            issue.category = label;
+          } else if (issuePriorities.indexOf(label) >= 0) {
+            issue.priority = label;
+          }
+        });
+        cb(null, issue);
+      },
+      // get project, projectUrl of issue
+      function(issue, cb) {
+        Project.get(issue.project_id, function(project) {
+          issue.project = project.name;
+          issue.projectUrl = project.web_url;
+          cb(null, issue);
+        });
+      }], function(err, issue) {
+        Issue.all(function(issues) {
+          var _doUpdate = false;
+          for (idx in issues) {
+            if(issues[idx].id == issue.id) {
+              issues[idx] = issue;
+              _doUpdate = true;
+            }
+          }
+          if (!_doUpdate) {
+            issues.push(issue);
+          }
+          Cache.setIssues(issues);
+          callback(issues);
+        });
+      });
 }
 
 

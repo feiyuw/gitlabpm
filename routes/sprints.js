@@ -83,7 +83,7 @@ router.post('/new', function(req, res) {
       for(projectId in projectIssues) {
         sprint = projectSprints[projectId];
         projectIssues[projectId].forEach(function(issueId){
-          Issue.edit(projectId, issueId, sprint.id, function(issue){
+          Issue.edit(issueId, sprint.id, function(issue){
             issueCount += 1;
             if(issueCount == sprintIssues.length) {
               cb(null);

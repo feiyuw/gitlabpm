@@ -5,15 +5,10 @@ function Cache() {
 }
 
 Cache.get = function(key) {
-  var _cached = _cache[key];
-  if (_cached) {
-    console.log('hit cache "' + key + '"');
-  }
-  return _cached;
+  return _cache[key];
 }
 
 Cache.set = function(key, value) {
-  console.log('update cache "' + key + '"');
   _cache[key] = value;
 }
 

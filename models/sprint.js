@@ -18,32 +18,36 @@ Sprint.all = function (callback) {
   }
 
   async.waterfall([
-      // get all sprints from projects
+      // get all milestones from projects
       function(cb) {
-        var sprintDict = {'unplanned': []};
+        var mileStones = [];
         var projectCount = 0;
         Project.allOwned(function (projects) {
           projects.forEach(function(project) {
-            projectCount += 1;
-            MileStone.projectAll(project.id, function(mileStones) {
-              mileStones.forEach(function(ms) {
-                if (!sprintDict[ms.title]) {
-                  sprintDict[ms.title] = [];
-                }
-              });
+            MileStone.projectAll(project.id, function(projectMileStones) {
+              projectCount += 1;
+              mileStones = mileStones.concat(projectMileStones);
+              if(projectCount == projects.length) {
+                cb(null, mileStones);
+              }
             });
-            if (projectCount == projects.length) {
-              cb(null, sprintDict);
-            }
           });
         });
+      },
+      // get all sprints from projects
+      function(mileStones, cb) {
+        var sprintDict = {'unplanned': []};
+        mileStones.forEach(function(ms) {
+          if (!sprintDict[ms.title]) {
+            sprintDict[ms.title] = [];
+          }
+        });
+        cb(null, sprintDict);
       },
       // set issues of each sprints, and 'unplanned'
       function(sprintDict, cb) {
         Issue.all(function (issues) {
-          var issueCount = 0;
           issues.forEach(function (issue) {
-            issueCount += 1;
             issue.sprint = issue.milestone && issue.milestone.title || 'unplanned';
             if (issue.sprint == 'unplanned') {
               // only opened/reopened issues will show in unassigned sprints
@@ -53,41 +57,54 @@ Sprint.all = function (callback) {
             } else {
               sprintDict[issue.sprint].push(issue);
             }
-            if (issueCount == issues.length) {
-              cb(null, sprintDict);
-            }
           });
+          cb(null, sprintDict);
         });
-      }], function(err, sprintDict) {
-        var sprints = [];
-        Object.keys(sprintDict).forEach(function (sprintName) {
-          var sprint = {};
-          sprint.name = sprintName;
-          sprint.issues = sprintDict[sprintName];
-          sprints.push(sprint);
-        });
-        Cache.setSprints(sprints);
-        callback(sprints);
-      });
+      }
+  ], function(err, sprintDict) {
+    var sprints = [];
+    Object.keys(sprintDict).forEach(function (sprintName) {
+      var sprint = {};
+      sprint.name = sprintName;
+      sprint.issues = sprintDict[sprintName];
+      sprints.push(sprint);
+    });
+    Cache.setSprints(sprints);
+    callback(sprints);
+  });
 }
 
 
 Sprint.recent = function(count, callback) {
-  Sprint.all(function (sprints) {
-    var devSprints = sprints.filter(function(sprint) {
-      return sprint.name != 'unplanned';
-    });
-    devSprints.sort(function(a, b) {
-      return parseInt(a.name.replace('sprint', '')) - parseInt(b.name.replace('sprint', ''));
-    });
-    recentSprints = devSprints.slice(0, count);
-    Sprint.get('unplanned', function(sprint) {
-      if (sprint.issues) {
-        recentSprints.push(sprint);
-      }
-    });
-    callback(recentSprints);
-  });
+  async.waterfall([
+      // get dev sprints
+      function(cb) {
+        Sprint.all(function (sprints) {
+          var devSprints = sprints.filter(function(sprint) {
+            return sprint.name != 'unplanned';
+          });
+          cb(null, devSprints);
+        });
+      },
+      // get recent dev sprints
+      function(devSprints, cb) {
+        devSprints.sort(function(a, b) {
+          return parseInt(a.name.replace('sprint', '')) - parseInt(b.name.replace('sprint', ''));
+        });
+        recentSprints = devSprints.slice(0, count);
+        cb(null, recentSprints);
+      },
+      // add unplanned sprint
+      function(recentSprints, cb) {
+        Sprint.get('unplanned', function(sprint) {
+          if (sprint.issues) {
+            recentSprints.push(sprint);
+            cb(null, recentSprints);
+          }
+        });
+      }], function(err, recentSprints) {
+        callback(recentSprints);
+      });
 }
 
 
