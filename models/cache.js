@@ -24,17 +24,6 @@ Cache.setIssues = function(value) {
   Cache.set('issues', value);
 }
 
-Cache.updateIssue = function(newIssue) {
-  issues = Cache.getIssues();
-  for (idx in issues) {
-    var issue = issues[idx];
-    if (issue.project_id == newIssue.project_id && issue.id == newIssue.id) {
-      issues.splice(issues.indexOf(issue), 1, newIssue);
-      Cache.setIssues(issues);
-      break
-    }
-  }
-}
 
 Cache.getMergeRequests = function() {
   return Cache.get('mergerequests');
