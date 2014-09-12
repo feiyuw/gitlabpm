@@ -64,7 +64,7 @@ MileStone.getOrCreate = function(projectId, title, dueDate, callback) {
 }
 
 MileStone.new = function(projectId, title, dueDate, callback) {
-  var postUrl = '/projects/' + project.id + '/milestones';
+  var postUrl = '/projects/' + projectId + '/milestones';
   var postData = {'id': projectId,
                   'title': title,
                   'due_date': dueDate};

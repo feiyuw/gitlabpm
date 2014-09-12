@@ -1,4 +1,4 @@
-var _cache = {}
+var _cache = {};
 
 function Cache() {
   // base model of cache
