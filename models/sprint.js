@@ -136,4 +136,50 @@ Sprint.new = function(sprintName, dueDate, callback) {
 }
 
 
+Sprint.update = function(issues, callback) {
+  Sprint.all(function(sprints) {
+    async.waterfall([
+      // init sprintDict
+      function(cb) {
+        var sprintDict = {};
+        for (idx in sprints) {
+          sprintDict[sprints[idx].name] = [];
+        }
+        cb(null, sprintDict);
+      },
+      // generate sprint dict with new issues
+      function(sprintDict, cb) {
+        for (_i in issues) {
+          var issue = issues[_i];
+          if (issue.sprint == 'unplanned') {
+            // only opened/reopened issues will show in unassigned sprints
+            if (openStates.indexOf(issue.state) >= 0) {
+              sprintDict['unplanned'].push(issue);
+            }
+          } else if(!sprintDict[issue.sprint]) { 
+            sprintDict[issue.sprint] = [issue];
+          }else {
+            sprintDict[issue.sprint].push(issue);
+          }
+        }
+        cb(null, sprintDict);
+      },
+      // recreate sprints
+      function(sprintDict, cb) {
+        var updatedSprints = [];
+        Object.keys(sprintDict).forEach(function (sprintName) {
+          var sprint = {};
+          sprint.name = sprintName;
+          sprint.issues = sprintDict[sprintName];
+          updatedSprints.push(sprint);
+        });
+        cb(null, updatedSprints);
+      }], function(err, updatedSprints) {
+        Cache.setSprints(updatedSprints);
+        callback(updatedSprints);
+      });
+  });
+}
+
+
 module.exports = Sprint;

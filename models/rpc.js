@@ -23,10 +23,16 @@ module.exports.get = function (apiStr, callback) {
       str += chunk;
     });
     response.on('end', function() {
-      callback(JSON.parse(str));
+      try {
+        callback(JSON.parse(str));
+      } catch(err) {
+        console.log('error: ' + err);
+        console.log('cannot parse ' + str);
+      }
     });
   }
 
+  console.log('request url: ' + path);
   http.request(options, cb).end();
 }
 
@@ -60,6 +66,9 @@ function _httpRequest(method, apiStr, reqData, callback) {
       callback(JSON.parse(str));
     });
   }
+
+  console.log('request url: ' + path);
+  console.log('request data: ' + reqData);
 
   _req = http.request(options, cb);
   _req.write(reqData);

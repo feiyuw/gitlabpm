@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var Issue = require('../models/issue');
 var MergeRequest = require('../models/mr');
+var Sprint = require('../models/sprint');
 
 router.post('/', function(req, res) {
   console.log('got webhook post');
@@ -12,7 +13,9 @@ router.post('/', function(req, res) {
     // handle issue
     console.log('it is an issue event');
     Issue.update(hookEvt.object_attributes, function(issues) {
-      res.send({'status': 'ok', 'category': 'issue', 'action': 'update'});
+      Sprint.update(issues, function(sprints) {
+        res.send({'status': 'ok', 'category': 'issue', 'action': 'update'});
+      });
     });
   } else if (hookEvt.object_kind == 'merge_request') {
     // handle merge request

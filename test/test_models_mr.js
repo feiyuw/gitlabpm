@@ -18,10 +18,10 @@ rpcStub.get = function(apiStr, callback) {
     case '/projects/18/merge_requests?state=opened':
       callback(_project18Mrs);
       break;
-    case '/projects/11/merge_requests/132':
+    case '/projects/11/merge_request/132':
       callback(_newMergeRequest);
       break;
-    case '/projects/11/merge_requests/570':
+    case '/projects/11/merge_request/570':
       if (process.env._UT_ACTION == "merged") {
         callback(_mergedMergeRequest);
       } else if (process.env._UT_ACTION == "closed") {
@@ -49,17 +49,17 @@ projectStub.get = function(projectId, callback) {
 
 
 // new merge request data
-var _hookUpdateMergeRequest = {"id":570,"iid":159,"project_id":11,"title":"Switch","description":"support ngplatform package switching","state":"opened","created_at":"2014-09-10 08:39:23 UTC","updated_at":"2014-09-11 03:59:09 UTC","target_branch":"master","source_branch":"switch","author_id":19,"assignee_id":null,"source_project_id":11,"target_project_id":11,"st_committs":[],"st_diffs":[],"merge_status":"unchecked","milestone_id":null}
+var _hookUpdateMergeRequest = {"id":570,"iid":159,"title":"Switch","description":"support ngplatform package switching","state":"opened","created_at":"2014-09-10 08:39:23 UTC","updated_at":"2014-09-11 03:59:09 UTC","target_branch":"master","source_branch":"switch","author_id":19,"assignee_id":null,"source_project_id":11,"target_project_id":11,"st_committs":[],"st_diffs":[],"merge_status":"unchecked","milestone_id":null}
 var _updateMergeRequest = {"id":570,"iid":159,"project_id":11,"title":"Switch","description":"support ngplatform package switching","state":"opened","created_at":"2014-09-10T08:39:23.000Z","updated_at":"2014-09-11T03:59:09.000Z","target_branch":"master","source_branch":"switch","upvotes":1,"downvotes":0,"author":{"name":"Wu Minxiao","username":"shawn.wu","id":19,"state":"active","avatar_url":"http://www.gravatar.com/avatar/15d626d327deb30deff42f9b56922270?s=40\u0026d=identicon"},"assignee":null,"source_project_id":11,"target_project_id":11,"labels":[]}
 
-var _hookNewMergeRequest = {"id":132,"iid":15,"project_id":11,"title":"oamcci","description":"","state":"opened","created_at":"2014-04-21 08:00:59 UTC","updated_at":"2014-09-01 09:28:56 UTC","target_branch":"master","source_branch":"oamcci","author_id":19,"assignee_id":null,"source_project_id":11,"target_project_id":11,"st_committs":[],"st_diffs":[],"merge_status":"unchecked","milestone_id":null}
+var _hookNewMergeRequest = {"id":132,"iid":15,"title":"oamcci","description":"","state":"opened","created_at":"2014-04-21 08:00:59 UTC","updated_at":"2014-09-01 09:28:56 UTC","target_branch":"master","source_branch":"oamcci","author_id":19,"assignee_id":null,"source_project_id":11,"target_project_id":11,"st_committs":[],"st_diffs":[],"merge_status":"unchecked","milestone_id":null}
 
 var _newMergeRequest = {"id":132,"iid":15,"project_id":11,"title":"Oamcci","description":"","state":"opened","created_at":"2014-04-21T08:00:59.000Z","updated_at":"2014-09-01T09:28:56.000Z","target_branch":"master","source_branch":"oamcci","upvotes":0,"downvotes":0,"author":{"name":"Wu Minxiao","username":"shawn.wu","id":19,"state":"active","avatar_url":"http://www.gravatar.com/avatar/15d626d327deb30deff42f9b56922270?s=40\u0026d=identicon"},"assignee":null,"source_project_id":11,"target_project_id":11,"labels":[]}
 
-var _hookMergedMergeRequest = {"id":570,"iid":159,"project_id":11,"title":"Switch","description":"support ngplatform package switching","state":"merged","created_at":"2014-09-10 08:39:23 UTC","updated_at":"2014-09-11 03:59:09 UTC","target_branch":"master","source_branch":"switch","author_id":19,"assignee_id":null,"source_project_id":11,"target_project_id":11,"st_committs":[],"st_diffs":[],"merge_status":"unchecked","milestone_id":null}
+var _hookMergedMergeRequest = {"id":570,"iid":159,"title":"Switch","description":"support ngplatform package switching","state":"merged","created_at":"2014-09-10 08:39:23 UTC","updated_at":"2014-09-11 03:59:09 UTC","target_branch":"master","source_branch":"switch","author_id":19,"assignee_id":null,"source_project_id":11,"target_project_id":11,"st_committs":[],"st_diffs":[],"merge_status":"unchecked","milestone_id":null}
 var _mergedMergeRequest = {"id":570,"iid":159,"project_id":11,"title":"Switch","description":"support ngplatform package switching","state":"merged","created_at":"2014-09-10T08:39:23.000Z","updated_at":"2014-09-11T03:59:09.000Z","target_branch":"master","source_branch":"switch","upvotes":1,"downvotes":0,"author":{"name":"Wu Minxiao","username":"shawn.wu","id":19,"state":"active","avatar_url":"http://www.gravatar.com/avatar/15d626d327deb30deff42f9b56922270?s=40\u0026d=identicon"},"assignee":null,"source_project_id":11,"target_project_id":11,"labels":[]}
 
-var _hookClosedMergeRequest = {"id":570,"iid":159,"project_id":11,"title":"Switch","description":"support ngplatform package switching","state":"closed","created_at":"2014-09-10 08:39:23 UTC","updated_at":"2014-09-11 03:59:09 UTC","target_branch":"master","source_branch":"switch","author_id":19,"assignee_id":null,"source_project_id":11,"target_project_id":11,"st_committs":[],"st_diffs":[],"merge_status":"unchecked","milestone_id":null}
+var _hookClosedMergeRequest = {"id":570,"iid":159,"title":"Switch","description":"support ngplatform package switching","state":"closed","created_at":"2014-09-10 08:39:23 UTC","updated_at":"2014-09-11 03:59:09 UTC","target_branch":"master","source_branch":"switch","author_id":19,"assignee_id":null,"source_project_id":11,"target_project_id":11,"st_committs":[],"st_diffs":[],"merge_status":"unchecked","milestone_id":null}
 var _closedMergeRequest = {"id":570,"iid":159,"project_id":11,"title":"Switch","description":"support ngplatform package switching","state":"closed","created_at":"2014-09-10T08:39:23.000Z","updated_at":"2014-09-11T03:59:09.000Z","target_branch":"master","source_branch":"switch","upvotes":1,"downvotes":0,"author":{"name":"Wu Minxiao","username":"shawn.wu","id":19,"state":"active","avatar_url":"http://www.gravatar.com/avatar/15d626d327deb30deff42f9b56922270?s=40\u0026d=identicon"},"assignee":null,"source_project_id":11,"target_project_id":11,"labels":[]}
 
 

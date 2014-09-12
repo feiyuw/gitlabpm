@@ -49,7 +49,7 @@ MergeRequest.update = function(mergeRequest, callback) {
   async.waterfall([
       // get merge request info, as parameter mergeRequest is the value from webhook, it's not the complete one
       function(cb) {
-        rpc.get('/projects/' + mergeRequest.project_id + '/merge_requests/' + mergeRequest.id, function(mr) {
+        rpc.get('/projects/' + mergeRequest.target_project_id + '/merge_request/' + mergeRequest.id, function(mr) {
           mr.description = markdown.toHTML(mr.description);
           cb(null, mr);
         });
