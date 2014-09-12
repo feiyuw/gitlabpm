@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
 var settings = require('./settings'); // new added for session
-var favicon = require('static-favicon');
+var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session'); // new added for session
@@ -22,7 +22,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(flash()); // new added for flash
-app.use(favicon());
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
