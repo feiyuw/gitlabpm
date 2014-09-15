@@ -1,3 +1,6 @@
+var ldap = require('ldapjs');
+
+
 function checkLogin(req, res, next) {
     if(!req.session.user) {
         req.flash('error', 'please login first!');
@@ -14,5 +17,5 @@ function checkNotLogin(req, res, next) {
     next();
 }
 
-exports.checkLogin = checkLogin;
-exports.checkNotLogin = checkNotLogin;
+module.exports.checkLogin = checkLogin;
+module.exports.checkNotLogin = checkNotLogin;

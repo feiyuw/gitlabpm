@@ -8,9 +8,9 @@ var Cache = require('../models/cache');
 
 // mock rpc
 var _project11Issues = [{"id":11,"iid":6,"project_id":11,"title":"add chat option between users connected to the same device","state":"opened","created_at":"2013-11-26T08:53:02.000Z","updated_at":"2014-09-02T07:08:12.000Z","labels":["improvement"],"milestone":null,"assignee":null,"author":{"name":"Zhang Yu","username":"yu.3.zhang","id":11,"state":"active"}},
-{"id":10,"iid":5,"project_id":11,"title":"record \u0026 replay support","description":"add support to record and replay for fdframework","state":"opened","created_at":"2013-11-26T08:49:18.000Z","updated_at":"2013-11-26T08:49:18.000Z","labels":["improvement"],"milestone":null,"assignee":null,"author":{"name":"Zhang Yu","username":"yu.3.zhang","id":11,"state":"active"}}]
+{"id":10,"iid":5,"project_id":11,"title":"record \u0026 replay support","description":"add support to record and replay for fdframework","state":"opened","created_at":"2013-11-26T08:49:18.000Z","updated_at":"2013-11-26T08:49:18.000Z","labels":["improvement"],"milestone":null,"assignee":{"name":"Zhang Yu","username":"yu.3.zhang","id":11,"state":"active"},"author":{"name":"Zhang Yu","username":"yu.3.zhang","id":11,"state":"active"}}]
 
-var _project18Issues = [{"id":9,"iid":4,"project_id":18,"title":"proxy mode support","description":"add proxy mode, use fd as a proxy between client and real device","state":"opened","created_at":"2013-11-26T08:48:52.000Z","updated_at":"2013-11-26T08:48:52.000Z","labels":["improvement"],"milestone":null,"assignee":null,"author":{"name":"Zhang Yu","username":"yu.3.zhang","id":11,"state":"active"}}]
+var _project18Issues = [{"id":9,"iid":4,"project_id":18,"title":"proxy mode support","description":"add proxy mode, use fd as a proxy between client and real device","state":"closed","created_at":"2013-11-26T08:48:52.000Z","updated_at":"2013-11-26T08:48:52.000Z","labels":["improvement"],"milestone":null,"assignee":{"name":"Zhang Yu","username":"yu.3.zhang","id":11,"state":"active"},"author":{"name":"Zhang Yu","username":"yu.3.zhang","id":11,"state":"active"}}]
 
 var _hookUpdateIssue = {"id":11,"iid":6,"project_id":11,"title":"add chat option between users connected to the same device","state":"opened","created_at":"2013-11-26 08:53:02 UTC","updated_at":"2014-09-02 07:08:12 UTC","milestone_id":15,"assignee_id":null,"author_id":11,"position":0}
 
@@ -80,6 +80,62 @@ describe('Issue', function() {
         done();
       });
     })
+  });
+
+  describe('#openAll', function() {
+    it('should return all open issues of owned projects', function(done) {
+      Issue.openAll(function(issues) {
+        assert.equal(issues.length, 2);
+        done();
+      });
+    });
+  });
+
+  describe('#filterAssignee', function() {
+    it('should return assignned issues only', function(done) {
+      Issue.filterAssignee('Zhang Yu', function(issues) {
+        assert.equal(issues.length, 2);
+        assert.equal(issues[0].assignee.name, 'Zhang Yu');
+        assert.equal(issues[1].assignee.name, 'Zhang Yu');
+        done();
+      });
+    });
+  });
+
+  describe('#openFilterAssignee', function() {
+    it('should return open assignned issues only', function(done) {
+      Issue.openFilterAssignee('Zhang Yu', function(issues) {
+        assert.equal(issues.length, 1);
+        assert.equal(issues[0].assignee.name, 'Zhang Yu');
+        assert.equal(issues[0].state, 'opened');
+        done();
+      });
+    });
+  });
+
+  describe('#filterAuthor', function() {
+    it('should return authored issues only', function(done) {
+      Issue.filterAuthor('Zhang Yu', function(issues) {
+        assert.equal(issues.length, 3);
+        assert.equal(issues[0].author.name, 'Zhang Yu');
+        assert.equal(issues[1].author.name, 'Zhang Yu');
+        assert.equal(issues[2].author.name, 'Zhang Yu');
+        done();
+      });
+    });
+  });
+
+  describe('#openFilterAuthor', function() {
+    it('should return open authored issues only', function(done) {
+      Issue.openFilterAuthor('Zhang Yu', function(issues) {
+        assert.equal(issues.length, 2);
+        assert.equal(issues[0].author.name, 'Zhang Yu');
+        assert.equal(issues[0].state, 'opened');
+        assert.equal(issues[1].author.name, 'Zhang Yu');
+        assert.equal(issues[1].state, 'opened');
+        done();
+      });
+    });
   });
 
   describe('#edit', function() {

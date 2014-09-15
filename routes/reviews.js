@@ -6,8 +6,10 @@
 var express = require('express');
 var router = express.Router();
 var MergeRequest = require('../models/mr.js')
+var checkLogin = require('./auth').checkLogin;
 
 /* GET API listing. */
+router.get('/', checkLogin);
 router.get('/', function(req, res) {
   MergeRequest.openAll(function(mergeRequests) {
     var myMergeRequests = mergeRequests.filter(function (mr) {

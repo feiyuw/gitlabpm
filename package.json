@@ -15,6 +15,7 @@
     "ejs": "~0.8.5",
     "express": "~4.2.0",
     "express-session": "*",
+    "ldapjs": "^0.7.1",
     "markdown": "*",
     "morgan": "~1.0.0",
     "serve-favicon": "^2.1.3",

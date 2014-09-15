@@ -10,14 +10,21 @@
   </head>
   <body>
     <header>
-      <h1><%= title %></h1>
+      <div>
+        <% if (user) { %>
+        <div class="welcome">
+          Welcome back <%= user %>!
+        </div>
+        <% } %>
+        <span style="font-size:32px; padding-left:20px"><%= title %></span>
+      </div>
     </header>
     <nav>
       <li>
         <a title="My Tasks" href="/">My Tasks</a>
       </li>
       <li>
-        <a title="Sprints" href="#">Sprints</a>
+        <a title="Sprints" href="/sprints">Sprints</a>
         <ul>
           <li><a title="Overview" href="/sprints">Overview</a></li>
           <li><a title="Add new Sprint" href="/sprints/new">Add new Sprint</a></li>
@@ -28,10 +35,10 @@
         <a title="Reviews" href="/reviews">Reviews</a>
       </li>
       <li>
-        <a title="Issues" href="#">Issues</a>
+      <a title="Issues" href="/issues">Issues</a>
         <ul>
           <li><a title="Overview" href="/issues">Overview</a></li>
-          <li><a title="All Issues" href="/issues/openall">All Issues</a></li>
+          <li><a title="Open Issues" href="/issues/openall">Open Issues</a></li>
           <li><a title="My Issues" href="/issues/my">My Issues</a></li>
           <li><a title="Assigneed Issues" href="/issues/assigneed">Assigneed To Me</a></li>
         </ul>

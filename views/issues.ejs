@@ -1,6 +1,6 @@
 <%- include header %>
 <section>
-  <p>Open Issues: <%= issues.length %></p>
+  <p>Total Issues: <%= issues.length %></p>
 </section>
 <section>
   <table>
@@ -12,7 +12,7 @@
       <th>Author</th>
       <th>Category</th>
       <th>Priority</th>
-      <th>Action</th>
+      <th>State</th>
     </tr>
     <% issues.forEach(function(issue) { %>
       <tr>
@@ -37,7 +37,7 @@
             <%= issue.priority %>
           <% } %>
         </td>
-        <td></td>
+        <td><%= issue.state %></td>
       </tr>
     <% }) %>
   </table>

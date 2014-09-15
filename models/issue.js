@@ -55,18 +55,38 @@ Issue.openAll = function (callback) {
 
 
 Issue.filterAuthor = function (userName, callback) {
-  Issue.openAll(function(issues) {
-    callback(issues.filter(function (issue) {
-      return issue.author.name == userName;
-    }));
-  });
+  var filterFunc = function(issue) {
+    return issue.author.name == userName;
+  };
+  Issue._filter(Issue.all, filterFunc, callback);
 }
 
+Issue.openFilterAuthor = function (userName, callback) {
+  var filterFunc = function(issue) {
+    return issue.author.name == userName;
+  };
+  Issue._filter(Issue.openAll, filterFunc, callback);
+}
 
 Issue.filterAssignee = function (userName, callback) {
-  Issue.openAll(function (issues) {
-    callback(issues.filter(function (issue) {
-      return issue.assignee && issue.assignee.name == userName;
+  var filterFunc = function(issue) {
+    return issue.assignee && issue.assignee.name == userName;
+  };
+  Issue._filter(Issue.all, filterFunc, callback);
+}
+
+Issue.openFilterAssignee = function (userName, callback) {
+  var filterFunc = function(issue) {
+    return issue.assignee && issue.assignee.name == userName;
+  };
+  Issue._filter(Issue.openAll, filterFunc, callback);
+}
+
+// private function, used to filter issues
+Issue._filter = function(allFunc, filterFunc, callback) {
+  allFunc(function(issues) {
+    callback(issues.filter(function(issue) {
+      return filterFunc(issue);
     }));
   });
 }
