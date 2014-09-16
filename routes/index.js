@@ -33,12 +33,12 @@ router.get('/', function(req, res) {
   ], function(err, currentSprint, myOpenIssues, myAssigneedIssues, ongoingReviews) {
     res.render('index', { title: 'My Tasks',
       user: req.session.user,
-    currentSprint: currentSprint,
-    myOpenIssues: myOpenIssues,
-    myAssigneedIssues: myAssigneedIssues,
-    ongoingReviews: ongoingReviews,
-    success: req.flash('success').toString(),
-    error: req.flash('error').toString()
+      currentSprint: currentSprint,
+      myOpenIssues: myOpenIssues,
+      myAssigneedIssues: myAssigneedIssues,
+      ongoingReviews: ongoingReviews,
+      success: req.flash('success').toString(),
+      error: req.flash('error').toString()
     });
   });
 });

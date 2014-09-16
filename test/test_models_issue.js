@@ -150,8 +150,8 @@ describe('Issue', function() {
   describe('#update', function() {
     it('should update the issue when issue exist', function(done) {
       Issue.update(_hookUpdateIssue, function(issues) {
-        assert.equal(issues[0].milestone.title, 'sprint14101');
-        assert.equal(Cache.getIssues()[0].milestone.title, 'sprint14101');
+        assert.equal(issues[0].sprint, 'sprint14101');
+        assert.equal(Cache.getIssues()[0].sprint, 'sprint14101');
         done();
       });
     });
@@ -161,6 +161,7 @@ describe('Issue', function() {
     it('should insert the issue when issue does not exist', function(done) {
       Issue.update(_hookNewIssue, function(issues) {
         assert.equal(issues.length, 4);
+        assert.equal(issues[3].sprint, 'unplanned');
         assert.equal(Cache.getIssues().length, 4);
         done();
       });

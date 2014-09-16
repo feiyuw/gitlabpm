@@ -172,6 +172,7 @@ Issue.update = function(issue, callback) {
             if(issues[idx].id == issue.id) {
               issues[idx] = issue;
               _doUpdate = true;
+              break;
             }
           }
           if (!_doUpdate) {
