@@ -161,10 +161,12 @@ Sprint.update = function(issues, callback) {
           sprintDict[sprints[idx].name] = [];
           sprintDueDict[sprints[idx].name] = null;
         }
+        console.log(sprintDueDict);
         cb(null, sprintDict, sprintDueDict);
       },
       // generate sprint dict with new issues
       function(sprintDict, sprintDueDict, cb) {
+        console.log(sprintDict);
         for (_i in issues) {
           var issue = issues[_i];
           if (issue.sprint == 'unplanned') {
@@ -172,7 +174,7 @@ Sprint.update = function(issues, callback) {
             if (openStates.indexOf(issue.state) >= 0) {
               sprintDict['unplanned'].push(issue);
             }
-          } else if(!sprintDict[issue.sprint]) {
+          } else if(sprintDict[issue.sprint].length <= 0) {
             sprintDict[issue.sprint] = [issue];
             sprintDueDict[issue.sprint] = issue.milestone.due_date;
           } else {
