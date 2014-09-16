@@ -37,15 +37,19 @@ Sprint.all = function (callback) {
       // get all sprints from projects
       function(mileStones, cb) {
         var sprintDict = {'unplanned': []};
+        var sprintDueDict = {'unplanned': null};
         mileStones.forEach(function(ms) {
           if (!sprintDict[ms.title]) {
             sprintDict[ms.title] = [];
           }
+          if (!sprintDueDict[ms.title]) {
+            sprintDueDict[ms.title] = ms.due_date;
+          }
         });
-        cb(null, sprintDict);
+        cb(null, sprintDict, sprintDueDict);
       },
       // set issues of each sprints, and 'unplanned'
-      function(sprintDict, cb) {
+      function(sprintDict, sprintDueDict, cb) {
         Issue.all(function (issues) {
           issues.forEach(function (issue) {
             issue.sprint = issue.milestone && issue.milestone.title || 'unplanned';
@@ -58,14 +62,15 @@ Sprint.all = function (callback) {
               sprintDict[issue.sprint].push(issue);
             }
           });
-          cb(null, sprintDict);
+          cb(null, sprintDict, sprintDueDict);
         });
       }
-  ], function(err, sprintDict) {
+  ], function(err, sprintDict, sprintDueDict) {
     var sprints = [];
     Object.keys(sprintDict).forEach(function (sprintName) {
       var sprint = {};
       sprint.name = sprintName;
+      sprint.dueDate = sprintDueDict[sprintName];
       sprint.issues = sprintDict[sprintName];
       sprints.push(sprint);
     });
@@ -83,15 +88,24 @@ Sprint.recent = function(count, callback) {
           var devSprints = sprints.filter(function(sprint) {
             return sprint.name != 'unplanned';
           });
+          devSprints.sort(function(a, b) {
+            return parseInt(a.name.replace('sprint', '')) - parseInt(b.name.replace('sprint', ''));
+          });
           cb(null, devSprints);
         });
       },
       // get recent dev sprints
       function(devSprints, cb) {
-        devSprints.sort(function(a, b) {
-          return parseInt(a.name.replace('sprint', '')) - parseInt(b.name.replace('sprint', ''));
-        });
-        recentSprints = devSprints.slice(0, count);
+        var startIdx = 0;
+        for(idx in devSprints) {
+          if(devSprints[idx].dueDate >= getToday()) {
+            startIdx = idx - parseInt(count/2) > 0
+                     ? idx - parseInt(count/2)
+                     : 0;
+            break;
+          }
+        }
+        recentSprints = devSprints.slice(startIdx, count);
         cb(null, recentSprints);
       },
       // add unplanned sprint
@@ -142,13 +156,15 @@ Sprint.update = function(issues, callback) {
       // init sprintDict
       function(cb) {
         var sprintDict = {};
+        var sprintDueDict = {};
         for (idx in sprints) {
           sprintDict[sprints[idx].name] = [];
+          sprintDueDict[sprints[idx].name] = null;
         }
-        cb(null, sprintDict);
+        cb(null, sprintDict, sprintDueDict);
       },
       // generate sprint dict with new issues
-      function(sprintDict, cb) {
+      function(sprintDict, sprintDueDict, cb) {
         for (_i in issues) {
           var issue = issues[_i];
           if (issue.sprint == 'unplanned') {
@@ -158,19 +174,21 @@ Sprint.update = function(issues, callback) {
             }
           } else if(!sprintDict[issue.sprint]) { 
             sprintDict[issue.sprint] = [issue];
+            sprintDueDict[issue.sprint] = issue.milestone.due_date;
           }else {
             sprintDict[issue.sprint].push(issue);
           }
         }
-        cb(null, sprintDict);
+        cb(null, sprintDict, sprintDueDict);
       },
       // recreate sprints
-      function(sprintDict, cb) {
+      function(sprintDict, sprintDueDict, cb) {
         var updatedSprints = [];
-        Object.keys(sprintDict).forEach(function (sprintName) {
+        Object.keys(sprintDict).forEach(function(sprintName) {
           var sprint = {};
           sprint.name = sprintName;
           sprint.issues = sprintDict[sprintName];
+          sprint.dueDate = sprintDueDict[sprintName];
           updatedSprints.push(sprint);
         });
         cb(null, updatedSprints);
@@ -179,6 +197,40 @@ Sprint.update = function(issues, callback) {
         callback(updatedSprints);
       });
   });
+}
+
+
+Sprint.current = function(callback) {
+  Sprint.all(function(sprints) {
+    sprints.sort(function(a, b) {
+      if(a == 'unplanned') {
+        return true;
+      }
+      if(b == 'unplanned') {
+        return false;
+      }
+      return parseInt(a.name.replace('sprint', '')) - parseInt(b.name.replace('sprint', ''));
+    });
+    for(idx in sprints) {
+      if (sprints[idx].dueDate >= getToday()) {
+        return callback(sprints[idx]);
+      }
+    }
+    return callback(null);
+  });
+}
+
+
+function getToday() {
+  var now = new Date();
+  var nowMonth = now.getMonth() + 1 >= 10
+               ? '' + (now.getMonth() + 1)
+               : '0' + (now.getMonth() + 1);
+  var nowDay = now.getDate() >= 10
+             ? '' + now.getDate()
+             : '0' + now.getDate();
+
+  return now.getFullYear() + '-' + nowMonth + '-' + nowDay;
 }
 
 

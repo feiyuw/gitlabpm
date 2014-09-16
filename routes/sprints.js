@@ -7,9 +7,9 @@ var async = require('async');
 var Sprint = require('../models/sprint');
 var Issue = require('../models/issue');
 
-// show recent 30 sprints and unplanned sprint status
+// show recent 5 sprints and unplanned sprint status
 router.get('/', function(req, res) {
-  Sprint.recent(30, function(sprints) {
+  Sprint.recent(5, function(sprints) {
     res.render('sprints', { title: 'Sprints',
       user: req.session.user,
       sprints: sprints,

@@ -91,4 +91,13 @@ describe('Sprint', function() {
       });
     });
   });
+
+  describe('#current', function() {
+    it('should return the current sprint', function(done) {
+      Sprint.current(function(currentSprint) {
+        assert.equal(currentSprint.name, 'sprint14101');
+        done();
+      });
+    });
+  });
 });
