@@ -4,6 +4,8 @@ var apiToken = require('../settings').apiToken;
 var http = require('http');
 var querystring = require('querystring');
 
+// TODO: use async.queue to do rpc request, to fix issue #5
+
 module.exports.get = function (apiStr, callback) {
   var path = apiPrefix + apiStr;
   if (path.indexOf('?') >= 0) {

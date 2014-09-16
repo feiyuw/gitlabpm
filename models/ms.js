@@ -4,6 +4,7 @@
 var rpc = require('./rpc');
 var Cache = require('./cache');
 var Project = require('./project');
+var runInQueue = require('./queue').runInQueue;
 
 function MileStone() {
   // model used for MileStones, it's just used to provide a model like feature
@@ -11,15 +12,17 @@ function MileStone() {
 
 MileStone.all = function(callback) {
   Project.allOwned(function (projects) {
-    var projectCount = 0;
     var mileStones = {};
+    var _queue = runInQueue(function(task, cb) {
+      MileStone.projectAll(task.project.id, function(projectMileStones) {
+        mileStones[task.project.id] = projectMileStones;
+        cb();
+      });
+    }, function(err) {
+      callback(mileStones);
+    });
     projects.forEach(function(project) {
-      projectCount += 1;
-      MileStone.projectAll(project.id, function(projectMileStones) {
-        mileStones[project.id] = projectMileStones;
-        if (projectCount == projects.length) {
-          callback(mileStones);
-        }
+      _queue.push({'project': project}, function(err) {
       });
     });
   });

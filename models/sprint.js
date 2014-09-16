@@ -1,10 +1,10 @@
 var async = require('async');
 var Cache = require('./cache');
-var rpc = require('./rpc');
 var Issue = require('./issue');
 var Project = require('./project');
 var MileStone = require('./ms');
 var openStates = require('../settings').openStates;
+var runInQueue = require('./queue').runInQueue;
 
 function Sprint() {
   // model used for sprints, it's just used to provide a model like feature
@@ -21,15 +21,17 @@ Sprint.all = function (callback) {
       // get all milestones from projects
       function(cb) {
         var mileStones = [];
-        var projectCount = 0;
+        var _queue = runInQueue(function(task, _cb) {
+          MileStone.projectAll(task.project.id, function(projectMileStones) {
+            mileStones = mileStones.concat(projectMileStones);
+            _cb();
+          });
+        }, function() {
+          cb(null, mileStones);
+        });
         Project.allOwned(function (projects) {
           projects.forEach(function(project) {
-            MileStone.projectAll(project.id, function(projectMileStones) {
-              projectCount += 1;
-              mileStones = mileStones.concat(projectMileStones);
-              if(projectCount == projects.length) {
-                cb(null, mileStones);
-              }
+            _queue.push({'project': project}, function(err) {
             });
           });
         });
@@ -135,15 +137,17 @@ Sprint.get = function(sprintName, callback) {
 Sprint.new = function(sprintName, dueDate, callback) {
   Project.allOwned(function (projects) {
     var sprints = [];
-    var projectCount = 0;
 
-    projects.forEach(function(project) {
-      MileStone.getOrCreate(project.id, sprintName, dueDate, function(mileStone) {
-        projectCount += 1;
+    var _queue = runInQueue(function(task, cb) {
+      MileStone.getOrCreate(task.project.id, sprintName, dueDate, function(mileStone) {
         sprints.push(mileStone);
-        if (projectCount == projects.length) {
-          callback(sprints);
-        }
+        cb();
+      });
+    }, function() {
+      callback(sprints);
+    });
+    projects.forEach(function(project) {
+      _queue.push({'project': project}, function(err) {
       });
     });
   });
@@ -161,12 +165,10 @@ Sprint.update = function(issues, callback) {
           sprintDict[sprints[idx].name] = [];
           sprintDueDict[sprints[idx].name] = null;
         }
-        console.log(sprintDueDict);
         cb(null, sprintDict, sprintDueDict);
       },
       // generate sprint dict with new issues
       function(sprintDict, sprintDueDict, cb) {
-        console.log(sprintDict);
         for (_i in issues) {
           var issue = issues[_i];
           if (issue.sprint == 'unplanned') {

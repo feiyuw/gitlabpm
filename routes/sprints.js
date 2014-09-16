@@ -102,5 +102,13 @@ router.post('/new', function(req, res) {
     });
 });
 
+router.get('/retro', function(req, res) {
+  res.render('retro', { title: 'Retrospective',
+    user: req.session.user,
+    success: req.flash('success').toString(),
+    error: req.flash('error').toString()
+  });
+});
+
 
 module.exports = router;

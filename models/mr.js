@@ -3,6 +3,7 @@ var Cache = require('./cache');
 var rpc = require('./rpc');
 var Project = require('./project');
 var async = require('async');
+var runInQueue = require('./queue').runInQueue;
 
 
 function MergeRequest() {
@@ -16,20 +17,23 @@ MergeRequest.openAll = function(callback) {
   }
   Project.allOwned(function(projects) {
     var mergeRequests = [];
-    var projectCount = 0;
-    projects.forEach(function(project) {
-      rpc.get('/projects/' + project.id + '/merge_requests?state=opened', function(projectMrs) {
+    var _queue = runInQueue(function(task, cb) {
+      rpc.get('/projects/' + task.project.id + '/merge_requests?state=opened', function(projectMrs) {
         projectMrs.forEach(function(mr) {
           mr.description = markdown.toHTML(mr.description);
-          mr.project = project.name;
-          mr.projectUrl = project.web_url;
+          mr.project = task.project.name;
+          mr.projectUrl = task.project.web_url;
         });
         mergeRequests = mergeRequests.concat(projectMrs);
-        projectCount += 1;
-        if (projectCount === projects.length) {
-          Cache.setMergeRequests(mergeRequests);
-          callback(mergeRequests);
-        }
+        cb();
+      });
+    }, function() {
+      Cache.setMergeRequests(mergeRequests);
+      callback(mergeRequests);
+    });
+
+    projects.forEach(function(project) {
+      _queue.push({'project': project}, function(err) {
       });
     });
   });

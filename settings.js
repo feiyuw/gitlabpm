@@ -11,4 +11,5 @@ module.exports = {
   ldapServer: 'ldap://ed-qa-gl.emea.nsn-net.net:389',
   ldapBaseDN: 'ou=People,o=NSN',
   ldapSearchScope: 'sub',
+  rpcLimit: 3, // concurrent rpc request limit
 };

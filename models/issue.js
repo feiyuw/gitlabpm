@@ -5,6 +5,7 @@ var openStates = require('../settings').openStates;
 var issueCategories = require('../settings').issueCategories;
 var issuePriorities = require('../settings').issuePriorities;
 var async = require('async');
+var runInQueue = require('./queue').runInQueue;
 
 
 function Issue() {
@@ -18,12 +19,11 @@ Issue.all = function (callback) {
   }
   Project.allOwned(function (projects) {
     var issues = [];
-    var projectCount = 0;
-    projects.forEach(function (project) {
-      rpc.get('/projects/' + project.id + '/issues', function (projectIssues) {
+    var _workerFunc = function(task, cb) {
+      rpc.get('/projects/' + task.project.id + '/issues', function (projectIssues) {
         projectIssues.forEach(function (issue) {
-          issue.project = project.name;
-          issue.projectUrl = project.web_url;
+          issue.project = task.project.name;
+          issue.projectUrl = task.project.web_url;
           issue.sprint = issue.milestone && issue.milestone.title || 'unplanned';
           issue.labels.forEach(function(label) {
             if (issueCategories.indexOf(label) >= 0) {
@@ -34,11 +34,16 @@ Issue.all = function (callback) {
           });
         });
         issues = issues.concat(projectIssues);
-        projectCount += 1;
-        if (projectCount === projects.length) {
-          Cache.setIssues(issues);
-          callback(issues);
-        }
+        cb();
+      });
+    };
+    var _drainFunc = function() {
+      Cache.setIssues(issues);
+      callback(issues);
+    };
+    var _queue = runInQueue(_workerFunc, _drainFunc);
+    projects.forEach(function (project) {
+      _queue.push({'project': project}, function(err) {
       });
     });
   });
