@@ -9,7 +9,7 @@ var Issue = require('../models/issue');
 
 // show recent 5 sprints and unplanned sprint status
 router.get('/', function(req, res) {
-  Sprint.recent(5, function(sprints) {
+  Sprint.recent(12, function(sprints) {
     res.render('sprints', { title: 'Sprints',
       user: req.session.user,
       sprints: sprints,

@@ -36,7 +36,7 @@
 <section>
   <h2>Recent Sprints</h2>
 <% sprints.forEach(function(sprint) { %>
-  <h2><a href="/sprints/s/<%= sprint.name %>"><%= sprint.name %></a></h2>
+  <h2><a href="/sprints/s/<%= sprint.name %>"><%= sprint.name %> (<%= sprint.dueDate || 'N/A' %>)</a></h2>
   <table>
     <tr>
       <th>Project</th>

@@ -70,6 +70,13 @@ MileStone.new = function(projectId, title, dueDate, callback) {
                   'due_date': dueDate};
   console.log('create new milestone "' + title + '" for project ' + projectId);
   rpc.post(postUrl, postData, function(mileStone) {
+    var cachedMileStones = Cache.getMileStones();
+    if(cachedMileStones[projectId]) {
+      cachedMileStones[projectId].push(mileStone);
+    } else {
+      cachedMileStones[projectId] = [mileStone];
+    }
+    Cache.setMileStones(cachedMileStones);
     callback(mileStone);
   });
 }
