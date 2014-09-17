@@ -29,6 +29,27 @@
   </table>
 </section>
 <section>
+  <h2>Ongoing Reviews</h2>
+  <table>
+    <tr>
+      <th>Project</th>
+      <th>Summary</th>
+      <th>Issue</th>
+      <th>Verify</th>
+      <th>Review</th>
+    </tr>
+    <% ongoingReviews.forEach(function(mr) { %>
+      <tr>
+        <td><%= mr.project %></td>
+        <td><a href="<%= mr.projectUrl %>/merge_requests/<%= mr.iid %>"><%= mr.title %></a></td>
+        <td></td>
+        <td></td>
+        <td><%= mr.upvotes %> up | <%= mr.downvotes %> down</td>
+      </tr>
+    <% }) %>
+  </table>
+</section>
+<section>
   <h2>My Assigneed Open Issues</h2>
   <table>
     <tr>
@@ -96,27 +117,6 @@
           <% } %>
         </td>
         <td><%= issue.state %></td>
-      </tr>
-    <% }) %>
-  </table>
-</section>
-<section>
-  <h2>Ongoing Reviews</h2>
-  <table>
-    <tr>
-      <th>Project</th>
-      <th>Summary</th>
-      <th>Issue</th>
-      <th>Verify</th>
-      <th>Review</th>
-    </tr>
-    <% ongoingReviews.forEach(function(mr) { %>
-      <tr>
-        <td><%= mr.project %></td>
-        <td><a href="<%= mr.projectUrl %>/merge_requests/<%= mr.iid %>"><%= mr.title %></a></td>
-        <td></td>
-        <td></td>
-        <td><%= mr.upvotes %> up | <%= mr.downvotes %> down</td>
       </tr>
     <% }) %>
   </table>
