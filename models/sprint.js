@@ -176,7 +176,7 @@ Sprint.update = function(issues, callback) {
             if (openStates.indexOf(issue.state) >= 0) {
               sprintDict['unplanned'].push(issue);
             }
-          } else if(sprintDict[issue.sprint].length <= 0) {
+          } else if(sprintDict[issue.sprint] == undefined || sprintDict[issue.sprint].length <= 0) {
             sprintDict[issue.sprint] = [issue];
             sprintDueDict[issue.sprint] = issue.milestone.due_date;
           } else {
