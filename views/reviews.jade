@@ -1,0 +1,105 @@
+extends layout
+
+block content
+  section
+    h2 Overview
+    chart#pieAuthor
+      h2 Reviews by Author
+      svg.pieChart
+    chart#pieProject
+      h2 Reviews by Project
+      svg.pieChart
+  script
+    | drawPieChart('#pieAuthor svg', dataByAuthor());
+    | drawPieChart('#pieProject svg', dataByProject());
+
+    | function drawPieChart(chartId, chartData) {
+    |   nv.addGraph(function() {
+    |     var chart = nv.models.pieChart()
+    |         .x(function(d) { return d.label })
+    |         .y(function(d) { return d.value })
+    |         .showLabels(true);
+
+    |     // draw pieCategory chart
+    |     d3.select(chartId)
+    |         .datum(chartData)
+    |         .transition().duration(350)
+    |         .call(chart);
+
+    |     return chart;
+    |   });
+    | }
+
+    | function dataByAuthor() {
+    |   return _dataBy(function(mr){
+    |     return mr.author.name;
+    |   });
+    | }
+
+    | function dataByProject() {
+    |   return _dataBy(function(mr){
+    |     return mr.project;
+    |   });
+    | }
+
+    | function _dataBy(keyFunc) {
+    |   var myMergeRequests = !{JSON.stringify(myMergeRequests)};
+    |   var otherMergeRequests = !{JSON.stringify(otherMergeRequests)};
+    |   var mergeRequests = myMergeRequests.concat(otherMergeRequests);
+    |   var dataDict = {};
+    |   var data = [];
+
+    |   mergeRequests.forEach(function(mr) {
+    |     if(dataDict[keyFunc(mr)]) {
+    |       dataDict[keyFunc(mr)] += 1;
+    |     } else {
+    |       dataDict[keyFunc(mr)] = 1;
+    |     }
+    |   });
+
+    |   Object.keys(dataDict).forEach(function(k) {
+    |     data = data.concat({'label': k, 'value': dataDict[k]});
+    |   });
+
+
+    |   return data;
+    | }
+
+  section
+    h2 My Outgoing Reviews
+    table
+      tr
+        th Project
+        th Summary
+        th Issue
+        th Verify
+        th Review
+      each mr in myMergeRequests
+        tr
+          td= mr.project
+          td
+            a(href="#{mr.projectUrl}/merge_requests/#{mr.iid}")= mr.title
+          td
+          td
+          td #{mr.upvotes} up | #{mr.downvotes} down
+
+  section
+    h2 My Ingoing Reviews
+    table
+      tr
+        th Project
+        th Summary
+        th Issue
+        th Author
+        th Verify
+        th Review
+      each mr in otherMergeRequests
+        tr
+          td= mr.project
+          td
+            a(href="#{mr.projectUrl}/merge_requests/#{mr.iid}")= mr.title
+          td
+          td
+            a(href="/reviews/u/#{mr.author.name}")= mr.author.name
+          td
+          td #{mr.upvotes} up | #{mr.downvotes} down

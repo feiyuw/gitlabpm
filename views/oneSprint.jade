@@ -1,0 +1,75 @@
+extends layout
+
+block content
+  section
+    chart#pieProject
+      h2 Issues by Projects
+      svg.pieChart
+  script
+    | drawPieChart('#pieProject svg', dataByProject());
+
+    | function drawPieChart(chartId, chartData) {
+    |   nv.addGraph(function() {
+    |     var chart = nv.models.pieChart()
+    |         .x(function(d) { return d.label })
+    |         .y(function(d) { return d.value })
+    |         .showLabels(true);
+
+    |     // draw pie Chart
+    |     d3.select(chartId)
+    |         .datum(chartData)
+    |         .transition().duration(350)
+    |         .call(chart);
+
+    |     return chart;
+    |   });
+    | }
+
+    | function dataByProject() {
+    |   var sprint = !{JSON.stringify(sprint)};
+    |   var dataDict = {};
+    |   var data = [];
+
+    |   sprint.issues.forEach(function(issue) {
+    |     if(dataDict[issue.project]) {
+    |       dataDict[issue.project] += 1;
+    |     } else {
+    |       dataDict[issue.project] = 1;
+    |     }
+    |   });
+
+    |   Object.keys(dataDict).forEach(function(k) {
+    |     data = data.concat({'label': k, 'value': dataDict[k]});
+    |   });
+
+    |   return data;
+    | }
+
+  section
+    h2
+      | Issues of 
+      a(href="/sprints/s/#{sprint.name}")= sprint.name
+    table
+      tr
+        th Project
+        th Issue
+        th Assignee
+        th Reporter
+        th Priority
+        th State
+        th Action
+      each issue in sprint.issues
+        tr
+          td= issue.project
+          td
+            a(href="#{issue.projectUrl}/issues/#{issue.iid}")= issue.title
+          td
+            if issue.assignee
+              a(href="/issues/a/#{issue.assignee.name}")= issue.assignee.name
+            else
+              | unassigned
+          td
+            a(href="/issues/u/#{issue.author.name}")= issue.author.name
+          td= issue.priority || ''
+          td= issue.state
+          td

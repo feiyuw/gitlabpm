@@ -1,0 +1,95 @@
+extends layout
+
+block content
+  section
+    h2 Current Sprint (#{currentSprint.name})
+    table
+      tr
+        th Project
+        th Issue
+        th Assignee
+        th Reporter
+        th Priority
+        th State
+        each issue in currentSprint.issues
+          tr
+            td= issue.project
+            td
+              a(href="#{issue.projectUrl}/issues/#{issue.iid}")= issue.title
+            td
+              if issue.assignee
+                a(href="/issues/a/#{issue.assignee.name}")= issue.assignee.name
+              else
+                | unassigned
+            td
+              a(href="/issues/u/#{issue.author.name}")= issue.author.name
+            td= issue.priority || ''
+            td= issue.state
+  section
+    h2 Ongoing Reviews
+    table
+      tr
+        th Project
+        th Summary
+        th Issue
+        th Verify
+        th Review
+      each mr in ongoingReviews
+        tr
+          td= mr.project
+          td
+            a(href="#{mr.projectUrl}/merge_requests/#{mr.iid}")= mr.title
+          td
+          td
+          td #{mr.upvotes} up | #{mr.downvotes} down
+  section
+    h2 My Assigneed Open Issues
+    table
+      tr
+        th Project
+        th Summary
+        th Sprint
+        th Author
+        th Category
+        th Priority
+        th State
+      each issue in myAssigneedIssues
+        tr
+          td= issue.project
+          td
+            a(href="#{issue.projectUrl}/issues/#{issue.iid}")= issue.title
+          td
+            a(href="/sprints/s/#{issue.sprint}")= issue.sprint
+          td
+            a(href="/issues/u/#{issue.author.name}")= issue.author.name
+          td= issue.category || ''
+          td= issue.priority || ''
+          td= issue.state
+  section
+    h2 My Open Issues
+    table
+      tr
+        th Project
+        th Summary
+        th Sprint
+        th Assignee
+        th Category
+        th Priority
+        th State
+      each issue in myOpenIssues
+        tr
+          td= issue.project
+          td
+            a(href="#{issue.projectUrl}/issues/#{issue.iid}")= issue.title
+          td
+            a(href="/sprints/s/#{issue.sprint}")= issue.sprint
+          td
+            if issue.assignee
+              a(href="/issues/a/#{issue.assignee.name}")= issue.assignee.name
+            else
+              | unassigned
+          td= issue.category || ''
+          td= issue.priority || ''
+          td= issue.state
+  section
+    h2 My Contributions

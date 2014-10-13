@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title="Project Management System for Gitlab"
+    link(rel="stylesheet", href="/stylesheets/style.css")
+    link(rel="stylesheet", href="/stylesheets/nv.d3.css")
+    script(src="/javascripts/d3.v3.min.js")
+    script(src="/javascripts/nv.d3.min.js")
+  body
+    header
+      div
+        if user
+          .welcome Welcome back #{user}
+        span(style="font-size:32px; padding-left:20px")= title
+    nav
+      li
+        a(title="My Tasks", href="/")  My Tasks
+      li
+        a(title="Sprints", href="/sprints")  Sprints
+        ul
+          li
+            a(title="Overview", href="/sprints")  Overview
+          li
+            a(title="Add new Sprint", href="/sprints/new")  Add new Sprint
+          li
+            a(title="Retrospective", href="/sprints/retro")  Retrospective
+      li
+        a(title="Reviews", href="/reviews")  Reviews
+      li
+        a(title="Issues", href="/issues")  Issues
+        ul
+          li
+            a(title="Overview", href="/issues")  Overview
+          li
+            a(title="Open Issues", href="/issues/openall")  Open Issues
+          li
+            a(title="My Issues", href="/issues/my")  My Issues
+          li
+            a(title="Assigneed Issues", href="/issues/assigneed")  Assigneed To Me
+      if user
+        li
+          a(title="Logout", href="/users/logout")  Logout
+      else
+        li
+          a(title="Login", href="/users/login")  Login
+    content
+      if success
+        div= success
+      if error
+        div= error
+      block content

@@ -1,0 +1,95 @@
+extends layout
+
+block content
+  section
+    p Open Issues: #{issues.length}
+  section
+    chart#pieAuthor
+      h2 Issues by Author
+      svg.pieChart
+    chart#pieProject
+      h2 Issues by Project
+      svg.pieChart
+    chart#pieCategory
+      h2 Issues by Category
+      svg.pieChart
+    chart#piePriority
+      h2 Issues by Priority
+      svg.pieChart
+    chart#pieSprint
+      h2 Issues by Sprint
+      svg.pieChart
+  script
+    | drawPieChart('#pieAuthor svg', dataByAuthor());
+    | drawPieChart('#pieProject svg', dataByProject());
+    | drawPieChart('#pieCategory svg', dataByCategory());
+    | drawPieChart('#piePriority svg', dataByPriority());
+    | drawPieChart('#pieSprint svg', dataBySprint());
+
+    | function drawPieChart(chartId, chartData) {
+    |   nv.addGraph(function() {
+    |     var chart = nv.models.pieChart()
+    |         .x(function(d) { return d.label })
+    |         .y(function(d) { return d.value })
+    |         .showLabels(true);
+
+    |     // draw pie Chart
+    |     d3.select(chartId)
+    |         .datum(chartData)
+    |         .transition().duration(350)
+    |         .call(chart);
+
+    |     return chart;
+    |   });
+    | }
+
+    | function dataByAuthor() {
+    |   return _dataBy(function(issue){
+    |     return issue.author.name;
+    |   });
+    | }
+
+    | function dataByProject() {
+    |   return _dataBy(function(issue){
+    |     return issue.project;
+    |   });
+    | }
+
+    | function dataByCategory() {
+    |   return _dataBy(function(issue){
+    |     return issue.category || 'unknown';
+    |   });
+    | }
+
+    | function dataByPriority() {
+    |   return _dataBy(function(issue){
+    |     return issue.priority || 'unknown';
+    |   });
+    | }
+
+    | function dataBySprint() {
+    |   return _dataBy(function(issue){
+    |     return issue.sprint || 'unknown';
+    |   });
+    | }
+
+    | function _dataBy(keyFunc) {
+    |   var issues = !{JSON.stringify(issues)};
+    |   var dataDict = {};
+    |   var data = [];
+
+    |   issues.forEach(function(issue) {
+    |     if(dataDict[keyFunc(issue)]) {
+    |       dataDict[keyFunc(issue)] += 1;
+    |     } else {
+    |       dataDict[keyFunc(issue)] = 1;
+    |     }
+    |   });
+
+    |   Object.keys(dataDict).forEach(function(k) {
+    |     data = data.concat({'label': k, 'value': dataDict[k]});
+    |   });
+
+
+    |   return data;
+    | }

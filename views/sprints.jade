@@ -1,0 +1,64 @@
+extends layout
+
+block content
+  section
+    chart#barSprint
+      h2 Issues by Sprints
+      svg.barChart
+  script
+    | var sprints = !{JSON.stringify(sprints)}.filter(function(sprint) {
+    |   return sprint.name != 'unplanned';
+    | });
+    | var data = [];
+
+    | sprints.forEach(function(sprint) {
+    |   data.push({'key': sprint.name, 'values': [{'x': sprint.name.replace('sprint', ''), 'y': sprint.issues.length}]});
+    | });
+
+    | nv.addGraph(function() {
+    |   var chart = nv.models.multiBarChart()
+    |     .transitionDuration(350)
+    |     .reduceXTicks(false)   //If 'false', every single x-axis tick label will be rendered.
+    |     .rotateLabels(0)      //Angle to rotate x-axis labels.
+    |     .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+    |     .groupSpacing(0.1)    //Distance between each group of bars.
+    |   ;
+
+    |   d3.select('#barSprint svg')
+    |       .datum(data)
+    |       .call(chart);
+
+    |   nv.utils.windowResize(chart.update);
+
+    |   return chart;
+    | });
+
+  section
+    h2 Recent Sprints
+    each sprint in sprints
+      h2
+        a(href="/sprints/s/<%= sprint.name %>") #{sprint.name} (#{sprint.dueDate || 'N/A'})
+      table
+        tr
+          th Project
+          th Issue
+          th Assignee
+          th Reporter
+          th Priority
+          th State
+          th Action
+        each issue in sprint.issues
+          tr
+            td= issue.project
+            td
+              a(href="#{issue.projectUrl}/issues/#{issue.iid}")= issue.title
+            td
+              if issue.assignee
+                a(href="/issues/a/#{issue.assignee.name}")= issue.assignee.name
+              else
+                | unassigned
+            td
+              a(href="/issues/u/#{issue.author.name}")= issue.author.name
+            td= issue.priority || ''
+            td= issue.state
+            td

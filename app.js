@@ -19,7 +19,7 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set('view engine', 'jade');
 
 app.use(flash()); // new added for flash
 app.use(favicon(__dirname + '/public/favicon.ico'));

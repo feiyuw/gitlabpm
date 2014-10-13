@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  section
+    form(method="post", action="/sprints/new", accept-charset="UTF-8")#newSprint
+      fieldset
+        legend Sprint information:
+        p
+          | Name: 
+          input(type="text", size="32", name="sprint", maxlength="32")#sprint.form-control
+          label (Enter sprint name here, the name should start with "sprint", eg: sprint14092)
+        p
+          | Due Date: 
+          input(type="text", size="30", name="dueDate", maxlength="30")#dueDate.form-control
+          label (Enter due date here, format is "YYYY-MM-DD", eg: 2014-09-12)
+        table
+          tr
+            th #
+            th Summary
+            th Project
+            th Assignee
+            th Author
+            th Category
+            th Priority
+          each issue in issues
+            tr
+              td
+                input(type="checkbox", name="sprintIssues", value="#{issue.project_id}:#{issue.id}")
+              td
+                a(href="#{issue.projectUrl}/issues/#{issue.iid}")= issue.title
+              td= issue.project
+              td
+                if issue.assignee
+                  a(href="/issues/a/#{issue.assignee.name}")= issue.assignee.name
+                else
+                  | unassigned
+              td
+                a(href="/issues/u/#{issue.author.name}")= issue.author.name
+              td= issue.category || ''
+              td= issue.priority || ''
+        p
+          input(type="submit", value="Create Sprint", name="commit")

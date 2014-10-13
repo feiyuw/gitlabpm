@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  section
+    p Total Issues: #{issues.length}
+  section
+    table
+      tr
+        th Project
+        th Summary
+        th Sprint
+        th Assignee
+        th Author
+        th Category
+        th Priority
+        th State
+      each issue in issues
+        tr
+          td= issue.project
+          td
+            a(href="#{issue.projectUrl}/issues/#{issue.iid}")= issue.title
+          td
+            a(href="/sprints/s/#{issue.sprint}")= issue.sprint
+          td
+            if issue.assignee
+              a(href="/issues/a/#{issue.assignee.name}")= issue.assignee.name
+            else
+              | unassigned
+          td
+            a(href="/issues/u/#{issue.author.name}")= issue.author.name
+          td= issue.category || ''
+          td= issue.priority || ''
+          td= issue.state
