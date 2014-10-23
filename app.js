@@ -25,14 +25,16 @@ app.set('view engine', 'jade');
 app.use(flash()); // new added for flash
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logging.connectLogger());
-app.use(morgan({
-  "format": "default",
-  "stream": {
-    write: function(str) {
-      logging.getLogger('normal').debug(str);
+if (app.get('env') === 'development') {
+  app.use(morgan({
+    "format": "default",
+    "stream": {
+      write: function(str) {
+        require("log4js").getLogger().debug(str);
+      }
     }
-  }
-}));
+  }));
+}
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
