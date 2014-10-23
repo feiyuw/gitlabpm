@@ -19,4 +19,4 @@ public/stylesheets/style.css
 .tags
 doc/
 build/
-*.log
+logs/

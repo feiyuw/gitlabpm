@@ -29,7 +29,7 @@ Sprint.all = function (callback) {
         }, function() {
           cb(null, mileStones);
         });
-        Project.allOwned(function (projects) {
+        Project.all(function (projects) {
           projects.forEach(function(project) {
             _queue.push({'project': project}, function(err) {
             });
@@ -135,7 +135,7 @@ Sprint.get = function(sprintName, callback) {
 
 
 Sprint.new = function(sprintName, dueDate, callback) {
-  Project.allOwned(function (projects) {
+  Project.all(function (projects) {
     var sprints = [];
 
     var _queue = runInQueue(function(task, cb) {

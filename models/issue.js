@@ -17,7 +17,7 @@ Issue.all = function (callback) {
   if (Cache.getIssues()) {
     return callback(Cache.getIssues());
   }
-  Project.allOwned(function (projects) {
+  Project.all(function (projects) {
     var issues = [];
     var _workerFunc = function(task, cb) {
       rpc.get('/projects/' + task.project.id + '/issues', function (projectIssues) {

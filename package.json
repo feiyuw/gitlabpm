@@ -16,6 +16,7 @@
     "express-session": "*",
     "jade": "^1.7.0",
     "ldapjs": "^0.7.1",
+    "log4js": "^0.6.21",
     "markdown": "*",
     "morgan": "~1.0.0",
     "serve-favicon": "^2.1.3",

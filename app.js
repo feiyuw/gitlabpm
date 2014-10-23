@@ -2,7 +2,8 @@ var express = require('express');
 var path = require('path');
 var settings = require('./settings'); // new added for session
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+var morgan = require('morgan');
+var logging = require('./logging');
 var cookieParser = require('cookie-parser');
 var session = require('express-session'); // new added for session
 var flash = require('connect-flash'); // new added for flash
@@ -23,7 +24,15 @@ app.set('view engine', 'jade');
 
 app.use(flash()); // new added for flash
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+app.use(logging.connectLogger());
+app.use(morgan({
+  "format": "default",
+  "stream": {
+    write: function(str) {
+      logging.getLogger('normal').debug(str);
+    }
+  }
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());

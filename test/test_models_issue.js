@@ -52,7 +52,7 @@ var _ownedProjects = [{"id":11,"web_url":"http://becrtt01.china.nsn-net.net/plat
 {"id":18,"web_url":"http://becrtt01.china.nsn-net.net/platformci/tepproxy","name":"TepProxy","name_with_namespace":"PlatformCI / TepProxy","path":"tepproxy","path_with_namespace":"platformci/tepproxy","created_at":"2013-11-26T06:38:02.000Z"}];
 
 
-projectStub.allOwned = function(callback) {
+projectStub.all = function(callback) {
   callback(_ownedProjects);
 }
 

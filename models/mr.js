@@ -15,7 +15,7 @@ MergeRequest.openAll = function(callback) {
   if (Cache.getMergeRequests()) {
     return callback(Cache.getMergeRequests());
   }
-  Project.allOwned(function(projects) {
+  Project.all(function(projects) {
     var mergeRequests = [];
     var _queue = runInQueue(function(task, cb) {
       rpc.get('/projects/' + task.project.id + '/merge_requests?state=opened', function(projectMrs) {

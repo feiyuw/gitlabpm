@@ -5,13 +5,14 @@ var rpc = require('./rpc');
 var Cache = require('./cache');
 var Project = require('./project');
 var runInQueue = require('./queue').runInQueue;
+var logger = require('../logging').getLogger('milestone');
 
 function MileStone() {
   // model used for MileStones, it's just used to provide a model like feature
 }
 
 MileStone.all = function(callback) {
-  Project.allOwned(function (projects) {
+  Project.all(function (projects) {
     var mileStones = {};
     var _queue = runInQueue(function(task, cb) {
       MileStone.projectAll(task.project.id, function(projectMileStones) {
@@ -56,7 +57,7 @@ MileStone.projectFilter = function(title, projectId, callback) {
 MileStone.getOrCreate = function(projectId, title, dueDate, callback) {
   MileStone.projectFilter(title, projectId, function(mileStones) {
     if (mileStones.length > 0) {
-      console.log('use exist milestone ' + title + ' for project[' + projectId + '] ');
+      logger.info('use exist milestone ' + title + ' for project[' + projectId + '] ');
       callback(mileStones[0]);
     } else {
       MileStone.new(projectId, title, dueDate, function(mileStone) {
@@ -71,7 +72,7 @@ MileStone.new = function(projectId, title, dueDate, callback) {
   var postData = {'id': projectId,
                   'title': title,
                   'due_date': dueDate};
-  console.log('create new milestone "' + title + '" for project ' + projectId);
+  logger.info('create new milestone "' + title + '" for project ' + projectId);
   rpc.post(postUrl, postData, function(mileStone) {
     var cachedMileStones = Cache.getMileStones();
     if(cachedMileStones[projectId]) {

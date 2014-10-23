@@ -3,8 +3,8 @@ var apiPrefix = require('../settings').apiPrefix;
 var apiToken = require('../settings').apiToken;
 var http = require('http');
 var querystring = require('querystring');
+var logger = require('../logging').getLogger('rpc');
 
-// TODO: use async.queue to do rpc request, to fix issue #5
 
 module.exports.get = function (apiStr, callback) {
   var path = apiPrefix + apiStr;
@@ -28,13 +28,13 @@ module.exports.get = function (apiStr, callback) {
       try {
         callback(JSON.parse(str));
       } catch(err) {
-        console.log('error: ' + err);
-        console.log('cannot parse ' + str);
+        logger.error('error: ' + err);
+        logger.error('cannot parse ' + str);
       }
     });
   }
 
-  console.log('request url: ' + path);
+  logger.info('request url: ' + path);
   http.request(options, cb).end();
 }
 
@@ -69,8 +69,8 @@ function _httpRequest(method, apiStr, reqData, callback) {
     });
   }
 
-  console.log('request url: ' + path);
-  console.log('request data: ' + reqData);
+  logger.debug('request url: ' + path);
+  logger.debug('request data: ' + reqData);
 
   _req = http.request(options, cb);
   _req.write(reqData);
