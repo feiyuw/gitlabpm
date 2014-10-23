@@ -1,9 +1,22 @@
+var log4js = require('log4js');
+log4js.configure({
+  appenders: [
+    { type: 'console' },
+    {
+      type: 'file',
+      filename: 'logs/access.log', 
+      maxLogSize: 1024,
+      backups: 4,
+    }
+  ]
+});
+
+var getLogger = require('./logging').getLogger
+
 var express = require('express');
 var path = require('path');
 var settings = require('./settings'); // new added for session
 var favicon = require('serve-favicon');
-var morgan = require('morgan');
-var logging = require('./logging');
 var cookieParser = require('cookie-parser');
 var session = require('express-session'); // new added for session
 var flash = require('connect-flash'); // new added for flash
@@ -24,17 +37,9 @@ app.set('view engine', 'jade');
 
 app.use(flash()); // new added for flash
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logging.connectLogger());
-if (app.get('env') === 'development') {
-  app.use(morgan({
-    "format": "default",
-    "stream": {
-      write: function(str) {
-        require("log4js").getLogger().debug(str);
-      }
-    }
-  }));
-}
+app.use(log4js.connectLogger(getLogger('normal'),
+                            {level: log4js.levels.INFO,
+                             format: ':method :url'}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
