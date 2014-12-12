@@ -32,7 +32,7 @@ Project.get = function (projectId, callback) {
   if (cachedProjects) {
     for (idx in cachedProjects) {
       if (cachedProjects[idx].id == projectId) {
-        return callback(cachedProject[idx]);
+        return callback(cachedProjects[idx]);
       }
     }
   } else {
